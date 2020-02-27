@@ -42,7 +42,24 @@ class Player(pygame.sprite.Sprite):
             self.rect.right = WIDTH
         if self.rect.left < 0:
             self.rect.left = 0
+            
+class Bullet(pygame.sprite.Sprite):
+    def __init__(self, x):
+        pygame.sprite.Sprite.__init__(self)
+        self.image = pygame.image.load('C:/Users/Admin/Desktop/Simuliator/res/img/Bullets.png').convert_alpha()
+        self.rect = self.image.get_rect()
+        self.rect.x = x
+        self.rect.y = HEIGHT - 10
+        self.speedy = random.randrange(1, 8) * -1
 
+    def update(self):
+        self.rect.y += self.speedy
+        if self.rect.top > HEIGHT + 10:
+            self.rect.x = random.randrange(WIDTH - self.rect.width)
+            self.rect.y = random.randrange(-100, -40)
+            self.speedy = random.randrange(1, 8)
+
+            
 class Mob(pygame.sprite.Sprite):
     def __init__(self):
         pygame.sprite.Sprite.__init__(self)
@@ -60,6 +77,7 @@ class Mob(pygame.sprite.Sprite):
             self.speedy = random.randrange(1, 8)
 
 mobs = pygame.sprite.Group()
+buls = pygame.sprite.Group()
 all_sprites = pygame.sprite.Group()
 player = Player()
 all_sprites.add(player)
@@ -78,7 +96,10 @@ while running:
         # проверка для закрытия окна
         if event.type == pygame.QUIT:
             running = False
-
+        if pygame.key.get_pressed()[pygame.K_LEFT]:
+            bul = Bullet(player.rect.x-33)
+            all_sprites.add(bul)
+            buls.add(bul)
     # Обновление
     all_sprites.update()
     
